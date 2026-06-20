@@ -1,0 +1,13 @@
+{
+  "name": "system-profiler-cli",
+  "version": "1.0.0",
+  "description": "Node.js System Profiler & Safe File CRUD CLI",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js"
+  },
+  "keywords": [],
+  "license": "MIT"
+}
