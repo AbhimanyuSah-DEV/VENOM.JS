@@ -174,20 +174,66 @@ File operation NEVER executes
 
 ## 🚀 How to Run
 
-```bash
-# No installation needed — zero dependencies!
+### 📦 Prerequisites
+
+| Requirement | Minimum Version | Check Command |
+|---|---|---|
+| **Node.js** | v18.0.0+ | `node --version` |
+
+> This project has **zero external dependencies** — no `npm install` is needed.
+
+### 🖥️ Windows (Command Prompt)
+
+1. Press `Win + R`, type `cmd`, and hit Enter.
+2. Navigate to the project folder and run:
+```cmd
+cd path\to\Thunder HAckathon 3
 node index.js
-
-# Or using npm
-npm start
-
-# Run the 52-test security suite
-npm test
 ```
 
-### Prerequisites
-- **Node.js** v18.0.0 or higher
-- No other dependencies required
+### 🖥️ Windows (PowerShell)
+
+```powershell
+cd "path\to\Thunder HAckathon 3"
+node index.js
+```
+
+### 🖥️ macOS / Linux (Terminal)
+
+```bash
+cd "/path/to/Thunder HAckathon 3"
+node index.js
+```
+
+---
+
+## 🎮 VENOM.JS Command Center
+
+When you run `node index.js`, you'll see the interactive menu:
+
+```
+    ██╗   ██╗███████╗███╗   ██╗ ██████╗ ███╗   ███╗       ██╗███████╗
+    ██║   ██║██╔════╝████╗  ██║██╔═══██╗████╗ ████║       ██║██╔════╝
+    ...
+          ░▒▓█ EDUCATIONAL VIRUS SIMULATOR █▓▒░
+       System Reconnaissance · File Manipulation · Data Exfiltration
+   ⚠  For educational purposes only. No actual harm is caused.  ⚠
+
+  ┌────────────────────────────────────────────────────────┐
+  │ ⚡ VENOM.JS — Command Center                          │
+  ├────────────────────────────────────────────────────────┤
+  │ 1  🔍  Target Reconnaissance      (scan system info)  │
+  │ 2  💉  Payload Operations (CRUD)   (file manipulation) │
+  │ 3  ☠️   Execute Full Attack Chain   (automated demo)    │
+  │ 4  📡  Exfiltrate Data (JSON)      (export report)     │
+  │ 5  🗂️   Scan Target Directory       (list files)        │
+  │ 0  🚪  Disengage & Exit                                │
+  └────────────────────────────────────────────────────────┘
+
+  venom>
+```
+
+Type a number and press **Enter** to execute.
 
 ---
 
