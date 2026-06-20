@@ -1,294 +1,252 @@
-# ☠️ VENOM.JS — Educational Virus Simulator
+<p align="center">
+  <img src="./assets/venom_banner.png" alt="VENOM.JS Banner" width="800">
+</p>
 
-> **⚠️ DISCLAIMER: This is a safe, educational simulation. No actual malicious actions are performed. All file operations are sandboxed.**
+<p align="center">
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-v18+-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js Version"></a>
+  <a href="https://github.com/AbhimanyuSah-DEV/VENOM.JS"><img src="https://img.shields.io/badge/Dependencies-Zero-brightgreen?style=for-the-badge" alt="Dependencies"></a>
+  <a href="https://github.com/AbhimanyuSah-DEV/VENOM.JS/blob/main/test.js"><img src="https://img.shields.io/badge/Tests-52%20Passing-success?style=for-the-badge&logo=mocha&logoColor=white" alt="Tests"></a>
+  <a href="https://github.com/AbhimanyuSah-DEV/VENOM.JS/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License"></a>
+</p>
 
-> A **zero-dependency** Node.js virus simulator that demonstrates how real malware performs **system reconnaissance**, **environment harvesting**, and **file manipulation** — all within a secure sandbox.
-
-![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=flat-square&logo=nodedotjs&logoColor=white)
-![Dependencies](https://img.shields.io/badge/Dependencies-0-brightgreen?style=flat-square)
-![Theme](https://img.shields.io/badge/Theme-Create%20A%20Virus%20In%20JS-red?style=flat-square)
-![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
+<p align="center">
+  <strong>☠️ Educational Virus Simulator (Reconnaissance, Payload Delivery, Code Injection, Data Exfiltration) ☠️</strong>
+</p>
 
 ---
 
-## 🦠 What Is This?
+> [!WARNING]
+> **EDUCATIONAL PURPOSES ONLY**  
+> This software is created strictly for cybersecurity research, educational demonstrations, and hackathon presentation. It simulates common malware techniques (system fingerprinting, file manipulation, exfiltration, and cleanup) **safely confined within a sandboxed directory (`./workspace`)**. No actual harm is caused to your filesystem, and no network connections are established.
 
-This project simulates the **core behaviors of real-world malware**, built entirely in JavaScript for educational purposes:
+---
 
-| Real Malware Behavior | VENOM.JS Simulation | How It Works |
-|---|---|---|
-| **Target Reconnaissance** | 🔍 System fingerprinting | Collects OS, CPU, memory, network, hostname, uptime |
-| **Environment Harvesting** | 🌐 Env variable extraction | Reads PATH, USER, SHELL, HOME, NODE_ENV |
-| **Payload Delivery** | 📦 File creation (CRUD) | Writes files to the target filesystem |
-| **Code Injection** | 💉 File append | Injects content into existing files |
-| **Data Exfiltration** | 📡 JSON export | Saves stolen intel to a drop file |
-| **Evidence Cleanup** | 🗑️ File deletion | Removes traces after execution |
-| **Sandbox Escape Attempt** | 🛡️ Path traversal test | Tries to break out (and fails!) |
+## 🦠 What is VENOM.JS?
 
-> **The key difference**: Real malware does this silently and maliciously. VENOM.JS does it **transparently and safely** inside a sandboxed `./workspace` directory.
+Built entirely in JavaScript for the **"CREATE A VIRUS IN JS"** hackathon theme, **VENOM.JS** is a zero-dependency CLI application that simulates the full lifecycle of real-world malware. 
+
+Through an interactive green-on-black "Matrix-themed" terminal UI, it provides a safe, hands-on look at how attackers gather host intelligence, deploy payloads, inject code, and clean up their tracks. It runs 100% locally with zero external npm packages, relying only on Node.js core modules.
 
 ---
 
 ## ✨ Features
 
-| Feature | Description |
-|---|---|
-| 🔍 **Target Reconnaissance** | OS, CPU (model/cores/speed), Memory (visual usage bar), Network IPs, Uptime |
-| 💉 **Payload Operations** | Create, Read, Update (inject), Delete files via interactive prompts |
-| ☠️ **Full Attack Chain** | Automated 7-phase sequence with skull ASCII art and typewriter effects |
-| 📡 **Data Exfiltration** | Export complete target intel to timestamped JSON |
-| 🛡️ **Security Sandbox** | All I/O confined to `./workspace` — path traversal attacks are blocked |
-| 🎨 **Hacker Terminal UI** | Green Matrix aesthetic, ASCII art, spinners, typewriter, box drawing |
-| 0️⃣ **Zero Dependencies** | Built-in Node.js modules only (`os`, `fs`, `path`, `readline`, `process`) |
-| 🧪 **52 Security Tests** | Comprehensive test suite covering path traversal, null bytes, edge cases |
+* **🔍 Target Reconnaissance**: Deep system fingerprinting (OS version, architecture, CPU specs, live RAM usage bar, network interfaces, and user environment variables).
+* **💉 Sandboxed Payload Engine**: A secure file system wrapper supporting sandboxed Create, Read, Update (inject), and Delete (CRUD) operations.
+* **☠️ Automated Attack Chain**: A hands-free, 7-phase simulation showing a complete malware attack lifecycle from initial drop to self-deletion and sandbox escape testing.
+* **📡 Exfiltration Engine**: Saves the collected intelligence into a timestamped JSON exfiltration report.
+* **🛡️ Bulletproof Sandbox**: Confined entirely to `./workspace`. Prevents directory escapes, null-byte injection, and path traversals, verified by a custom test suite.
+* **🎨 Hacker UI Toolkit**: Retro cyber-security styling built from scratch using raw ANSI escape codes (typewriter text effects, loading spinners, colored box layouts, and ASCII art).
+* **🧪 52 Security Tests**: A comprehensive built-in test suite ensuring absolute safety and validating path-traversal prevention mechanisms.
 
 ---
 
-## 📋 Requirements Checklist
-
-| # | Requirement | Status | Implementation |
-|---|-------------|--------|----------------|
-| 1 | Operating System details | ✅ | `os.type()`, `os.platform()`, `os.release()` |
-| 2 | CPU Architecture | ✅ | `os.arch()`, model, cores, speed via `os.cpus()` |
-| 3 | Hostname | ✅ | `os.hostname()` |
-| 4 | Node.js Version | ✅ | `process.version` |
-| 5 | Platform Information | ✅ | `os.platform()` |
-| 6 | User Home Directory | ✅ | `os.homedir()` |
-| 7 | Environment Variables | ✅ | PATH, USER, SHELL, LANG, HOME, TERM, NODE_ENV |
-| 8 | Structured output | ✅ | Key-value display, boxes, JSON export |
-| 9 | Graceful error handling | ✅ | `\|\|` fallbacks, ENOENT catch, try/catch guards |
-| 10 | CRUD on files | ✅ | Create, Read, Update, Delete + List |
-| 11 | Code flow in README | ✅ | This document |
-
----
-
-## 🏗️ Project Structure
+## 🏗️ Project Architecture
 
 ```
 /
 ├── src/
-│   ├── sysInfo.js       # 🔍 Reconnaissance module (OS, CPU, Memory, Network, Env)
-│   ├── fileCrud.js       # 💉 Payload engine (sandboxed CRUD with security guard)
-│   └── utils.js          # 🎨 Hacker UI toolkit (ANSI colors, boxes, typewriter)
-├── workspace/            # 🔒 Sandbox directory (auto-created, all I/O confined here)
-├── index.js              # ☠️ Main virus simulator — interactive command center
-├── test.js               # 🧪 52-test security & vulnerability suite
-├── package.json          # ES Module config, zero external dependencies
-├── readme.md             # This file
-└── walkthrough.md        # Step-by-step demo guide for judges
+│   ├── sysInfo.js        # 🔍 Reconnaissance Module (Telemetry, RAM, Net, Env)
+│   ├── fileCrud.js       # 💉 Sandboxed Payload Engine (Path Traversal Protection)
+│   └── utils.js          # 🎨 Hacker UI Toolkit (ANSI Colors, Spinners, Typewriter)
+├── workspace/             # 🔒 Isolated Sandbox (All file I/O is restricted here)
+├── index.js               # ☠️ CLI Command Center (Main Entry Point)
+├── test.js                # 🧪 52-Test Security & Vulnerability Test Suite
+├── package.json           # Project metadata (ES Modules config)
+└── walkthrough.md         # Extended command documentation
+```
+
+### Module Separation of Concerns
+
+```mermaid
+graph TD
+    Index[index.js <br> Command & Control] --> SysInfo[src/sysInfo.js <br> Reconnaissance]
+    Index --> FileCrud[src/fileCrud.js <br> Sandboxed Payload Engine]
+    Index --> Utils[src/utils.js <br> Hacker UI & Presentation]
+    FileCrud -.-> Sandbox[(./workspace <br> Confined Directory)]
 ```
 
 ---
 
-## 🔄 Code Flow & Strategy
+## 🔄 Core Execution Flows
 
-### How Real Malware Works vs. VENOM.JS
+### 1. Automated Attack Chain Sequence (Option 3)
+When you trigger the automated attack chain, VENOM.JS executes a full attack simulation sequence across 7 distinct phases:
 
-```
-REAL MALWARE                          VENOM.JS (Safe Simulation)
-───────────                          ──────────────────────────
-1. Silently installs on target   →   1. User runs `node index.js`
-2. Fingerprints the system       →   2. getSystemTelemetry() collects OS/CPU/RAM/Net
-3. Harvests environment vars     →   3. Reads PATH, USER, SHELL with || fallbacks
-4. Drops payload to filesystem   →   4. createFile() writes to ./workspace ONLY
-5. Injects code into files       →   5. updateFile() appends to existing files
-6. Exfiltrates data to C2 server →   6. Exports JSON report to ./workspace
-7. Deletes logs/evidence         →   7. deleteFile() removes traces
-8. Spreads to other systems      →   8. ❌ NOT SIMULATED (safe boundary)
-```
-
-### Execution Flow
-
-```
-node index.js
-  │
-  ├─► BOOT SEQUENCE
-  │     ├── Display VENOM.JS ASCII art banner
-  │     ├── Typewriter-style initialization messages
-  │     ├── Establish sandbox (fs.mkdirSync ./workspace)
-  │     └── Load reconnaissance & payload modules
-  │
-  ├─► COMMAND CENTER (Interactive Menu Loop)
-  │     │
-  │     ├── [1] 🔍 Target Reconnaissance
-  │     │     ├── Scan target fingerprint (OS, Platform, Hostname, Uptime)
-  │     │     ├── Gather CPU intel (Model, Cores, Speed)
-  │     │     ├── Map memory (Total/Used/Free + visual progress bar)
-  │     │     ├── Discover network interfaces (IPv4, MAC)
-  │     │     └── Harvest environment variables (7 variables + fallbacks)
-  │     │
-  │     ├── [2] 💉 Payload Operations (CRUD Sub-Menu)
-  │     │     ├── 📦 Drop Payload    → create file
-  │     │     ├── 📖 Extract Data    → read file
-  │     │     ├── 💉 Inject Code     → append to file
-  │     │     └── 🗑️ Destroy Evidence → delete file
-  │     │
-  │     ├── [3] ☠️ Execute Full Attack Chain (Automated Demo)
-  │     │     ├── Phase 2.1: Payload Drop       (create payload.txt)
-  │     │     ├── Phase 2.2: Data Extraction     (read payload)
-  │     │     ├── Phase 2.3: Code Injection      (append to payload)
-  │     │     ├── Phase 2.4: Verify Injection    (read modified file)
-  │     │     ├── Phase 2.5: Evidence Cleanup    (delete payload)
-  │     │     ├── Phase 2.6: Verify Cleanup      (read deleted → error)
-  │     │     └── Phase 2.7: Sandbox Escape Test (blocked by security)
-  │     │
-  │     ├── [4] 📡 Exfiltrate Data → export JSON report to workspace
-  │     ├── [5] 🗂️ Scan Target Directory → list all files
-  │     └── [0] 🚪 Disengage & Exit
-  │
-  └─► CLEANUP
-        └── Close readline, print disconnect message
+```mermaid
+graph TD
+    A[Start: node index.js] --> B[Boot & Sandbox Init]
+    B --> C[Command Center Menu]
+    C -->|Option 3| D[Execute Full Attack Chain]
+    D --> D1[Phase 2.1: Payload Drop <br>create payload.txt]
+    D1 --> D2[Phase 2.2: Data Extraction <br>read payload.txt]
+    D2 --> D3[Phase 2.3: Code Injection <br>append to payload.txt]
+    D3 --> D4[Phase 2.4: Verify Injection <br>read modified file]
+    D4 --> D5[Phase 2.5: Evidence Cleanup <br>delete payload.txt]
+    D5 --> D6[Phase 2.6: Verify Cleanup <br>confirm deletion error]
+    D6 --> D7[Phase 2.7: Sandbox Escape <br>attempt path traversal]
+    D7 --> E[Simulation Finished]
 ```
 
-### Architecture: Separation of Concerns
+### 2. The Sandbox Security Pipeline
+Before any filesystem write, read, or delete takes place, the request goes through the following security checks to prevent sandbox escape:
 
-| Module | Virus Analogy | Responsibility |
-|---|---|---|
-| `src/sysInfo.js` | **Reconnaissance payload** | Pure data-gathering — reads system state, returns plain object. No side effects. |
-| `src/fileCrud.js` | **File manipulation engine** | All file I/O + security validation. Every function returns structured results. |
-| `src/utils.js` | **Stealth UI layer** | Terminal formatting, hacker aesthetics, animations. Zero business logic. |
-| `index.js` | **Command & Control (C2)** | Orchestrates modules, manages interactive menu, delegates operations. |
-
-### Security Sandbox — Why VENOM.JS Is Safe
-
+```mermaid
+graph LR
+    Input[User Path Input] --> Validate[String & Null Byte Check]
+    Validate -->|Pass| Resolve[Resolve Absolute Path]
+    Validate -->|Fail| Block[Block & Throw Error]
+    Resolve --> CheckPrefix{Starts with BASE_DIR?}
+    CheckPrefix -->|Yes| CheckSelf{Is BASE_DIR itself?}
+    CheckPrefix -->|No| Block
+    CheckSelf -->|Yes| Block
+    CheckSelf -->|No| Execute[Execute File I/O]
 ```
-User Input: "../../../etc/passwd"
-    ↓
-safePath() resolves to absolute path
-    ↓
-Check: does resolved path start with BASE_DIR + path.sep?
-    ↓
-NO → throw Error("[SECURITY] Path traversal blocked...")
-    ↓
-File operation NEVER executes
-```
-
-**Defense layers:**
-1. **Input validation** — rejects empty, whitespace-only, and non-string filenames
-2. **Null byte detection** — blocks `\0` injection before path resolution
-3. **Path traversal guard** — `safePath()` validates every path before any I/O
-4. **Directory protection** — prevents operations on the workspace directory itself
-5. **Graceful errors** — ENOENT and deletion errors return objects, never crash
 
 ---
 
 ## 🚀 How to Run
 
 ### 📦 Prerequisites
+- **Node.js** v18.0.0 or higher is required. Check your version with:
+  ```bash
+  node --version
+  ```
+- **No dependencies**: This project uses only built-in modules. No `npm install` is needed.
 
-| Requirement | Minimum Version | Check Command |
-|---|---|---|
-| **Node.js** | v18.0.0+ | `node --version` |
+---
 
-> This project has **zero external dependencies** — no `npm install` is needed.
+### 🖥️ Windows (Command Prompt - CMD)
 
-### 🖥️ Windows (Command Prompt)
+1. Open **Command Prompt** (Press `Win + R`, type `cmd`, and press Enter).
+2. Navigate to the project directory:
+   ```cmd
+   cd "C:\Users\Vidushi\coding\Thunder Hackathon\Thunder HAckathon 3"
+   ```
+   > [!TIP]
+   > You can also open the project directory in File Explorer, click the address bar at the top, type `cmd`, and press Enter.
+3. Launch the simulator:
+   ```cmd
+   node index.js
+   ```
 
-1. Press `Win + R`, type `cmd`, and hit Enter.
-2. Navigate to the project folder and run:
-```cmd
-cd path\to\Thunder HAckathon 3
-node index.js
-```
+---
 
 ### 🖥️ Windows (PowerShell)
 
-```powershell
-cd "path\to\Thunder HAckathon 3"
-node index.js
-```
+1. Open **PowerShell**.
+2. Navigate to the directory and run the simulator:
+   ```powershell
+   cd "C:\Users\Vidushi\coding\Thunder Hackathon\Thunder HAckathon 3"
+   node index.js
+   ```
+
+---
 
 ### 🖥️ macOS / Linux (Terminal)
 
+1. Open your terminal.
+2. Run the following commands:
+   ```bash
+   cd "/path/to/Thunder HAckathon 3"
+   node index.js
+   ```
+
+---
+
+### 🧪 Running Security Tests
+To run the security test suite and verify the sandbox configuration:
 ```bash
-cd "/path/to/Thunder HAckathon 3"
-node index.js
+npm test
 ```
+*(Or run `node test.js` directly)*
 
 ---
 
-## 🎮 VENOM.JS Command Center
+## 🎯 3-Minute Hackathon Demo Script (For Judges)
 
-When you run `node index.js`, you'll see the interactive menu:
+Use this script during your presentation to showcase the project's features and technical depth in exactly 3 minutes.
 
-```
-    ██╗   ██╗███████╗███╗   ██╗ ██████╗ ███╗   ███╗       ██╗███████╗
-    ██║   ██║██╔════╝████╗  ██║██╔═══██╗████╗ ████║       ██║██╔════╝
-    ...
-          ░▒▓█ EDUCATIONAL VIRUS SIMULATOR █▓▒░
-       System Reconnaissance · File Manipulation · Data Exfiltration
-   ⚠  For educational purposes only. No actual harm is caused.  ⚠
+### **Minute 1: The Hook & Reconnaissance**
+1. Launch the application: `node index.js`.
+2. **Point out the aesthetics**: The ASCII terminal banner, typewriter loading sequences, and Matrix-green UI.
+3. Select **Option 1 (Target Reconnaissance)**.
+4. **Explain to the judges**: 
+   > *"Before real malware acts, it gathers environment intel. Here we're reading OS info, hostnames, network MAC addresses, and environment configurations safely using Node's standard modules. The RAM usage bar updates dynamically, helping malware detect low-memory analysis sandbox environments."*
 
-  ┌────────────────────────────────────────────────────────┐
-  │ ⚡ VENOM.JS — Command Center                          │
-  ├────────────────────────────────────────────────────────┤
-  │ 1  🔍  Target Reconnaissance      (scan system info)  │
-  │ 2  💉  Payload Operations (CRUD)   (file manipulation) │
-  │ 3  ☠️   Execute Full Attack Chain   (automated demo)    │
-  │ 4  📡  Exfiltrate Data (JSON)      (export report)     │
-  │ 5  🗂️   Scan Target Directory       (list files)        │
-  │ 0  🚪  Disengage & Exit                                │
-  └────────────────────────────────────────────────────────┘
+### **Minute 2: Interactive Sandbox & CRUD**
+1. Select **Option 2 (Payload Operations)** to open the sub-menu.
+2. Select **Option 1 (Drop Payload)**:
+   - File Name: `target.txt`
+   - Content: `MALWARE_PAYLOAD_INIT`
+3. Select **Option 3 (Inject Code)**:
+   - File Name: `target.txt`
+   - Appended content: `[INJECTED_CMD_EXEC]`
+4. Select **Option 2 (Extract Data)** on `target.txt` to show the injected result.
+5. Select **Option 0** to return to the main menu.
+6. **Explain to the judges**:
+   > *"All file operations are confined within the `./workspace` directory. Any attempts to write files outside of this sandbox are intercepted by our validation engine."*
 
-  venom>
-```
-
-Type a number and press **Enter** to execute.
-
----
-
-## 📊 What Data is Collected (Reconnaissance Report)
-
-| Data Point | Source | What Real Malware Uses This For |
-|---|---|---|
-| **OS Type** | `os.type()` | Selecting OS-specific exploits |
-| **Platform** | `os.platform()` | Choosing compatible payloads |
-| **OS Release** | `os.release()` | Checking for known vulnerabilities |
-| **CPU Architecture** | `os.arch()` | Deploying architecture-specific shellcode |
-| **CPU Model** | `os.cpus()[0].model` | Identifying high-value targets |
-| **CPU Cores** | `os.cpus().length` | Calibrating crypto-mining intensity |
-| **Hostname** | `os.hostname()` | Identifying the target on a network |
-| **Node.js Version** | `process.version` | Exploiting runtime vulnerabilities |
-| **Home Directory** | `os.homedir()` | Locating user files for encryption/theft |
-| **System Uptime** | `os.uptime()` | Detecting sandbox/VM environments |
-| **Memory** | `os.totalmem()` / `os.freemem()` | Detecting analysis VMs (low RAM = likely VM) |
-| **Network IPs** | `os.networkInterfaces()` | Lateral movement and data exfiltration routing |
-| **MAC Address** | Network interface data | Fingerprinting hardware, evading MAC-based blocks |
-| **PATH** | `process.env.PATH` | Finding installed tools to abuse |
-| **USER** | `process.env.USER` | Privilege level assessment |
-| **SHELL** | `process.env.SHELL` | Command execution target |
-
-> All environment variables use `||` fallbacks to `"Not Available"` — the app **never crashes** on missing values.
+### **Minute 3: Automated Attack Chain & Security Proof**
+1. Select **Option 3 (Execute Full Attack Chain)**.
+2. Let the automated 7-phase sequence execute. Draw attention to the typewriter animation, the skull ASCII art, and the final Phase 2.7 where the sandbox blocks a path-traversal escape (`../../escape.txt`).
+3. Select **Option 0** to exit the simulator.
+4. Run the security suite in the terminal: `npm test` (or `node test.js`).
+5. **Close with confidence**:
+   > *"We wrote a custom test suite with 52 test cases that exhaustively probe for path traversal, null-byte bypasses, and directory boundaries. This proves we can simulate malware mechanics with zero external libraries while keeping the user's computer completely secure."*
 
 ---
 
-## 🧪 Security Test Suite
+## 📊 Reconnaissance Data Dictionary
 
-Run with `npm test` — 52 tests covering:
+VENOM.JS collects the following telemetry to simulate real malware behavior.
 
-| Category | Tests | Description |
-|---|---|---|
-| Path Traversal | 11 | `../`, `..\..\`, absolute paths, hidden in subdirs |
-| Null Byte Injection | 1 | `filename\0.txt` |
-| CRUD Happy Path | 6 | Full create→read→update→read→delete→read cycle |
-| CRUD Edge Cases | 11 | Empty content, 100KB files, Unicode, special chars |
-| Input Validation | 4 | Empty, whitespace, non-string, `.` filenames |
-| Telemetry Integrity | 7 | All fields present, types correct, no undefined |
-| Utility Functions | 9 | formatBytes, formatUptime, progressBar boundaries |
-| Sandbox Boundaries | 3 | Exact prefix matching, hidden files allowed |
+| Intel Collected | Node.js Core API | Real Malware Objective | Safe Simulation Behavior |
+| :--- | :--- | :--- | :--- |
+| **OS Type / Platform** | `os.type()` / `os.platform()` | Selecting OS-targeted payloads | Returns platform strings (`win32`, `darwin`) |
+| **OS Release Version** | `os.release()` | Identifying unpatched CVE exploits | Gathers OS version numbers |
+| **Hostname** | `os.hostname()` | Mapping network topology | Gathers the machine name |
+| **System Uptime** | `os.uptime()` | Checking if host is a newly booted VM | Formats to readable duration (`1d 4h 3m`) |
+| **CPU Spec & Cores** | `os.cpus()` / `os.arch()` | Calibrating crypto-jacking threads | Displays model name and core count |
+| **Physical Memory (RAM)** | `os.totalmem()` / `os.freemem()` | Detecting sandboxes (low RAM = likely VM) | Renders free/used RAM & dynamic progress bar |
+| **Network Interfaces** | `os.networkInterfaces()` | Selecting routing paths & lateral propagation | Discovers local IPv4 & MAC address |
+| **Environment Variables** | `process.env` | Finding credentials, PATH variables, shells | Gathers user environment configs with fallbacks |
 
 ---
 
-## 🛠️ Technologies Used
+## 🛡️ Sandbox Security Guard
 
-- **Runtime**: Node.js (v18+)
-- **Language**: JavaScript (ES6+ with ES Modules)
-- **Dependencies**: `0` — built-in modules only
-- **UI**: Raw ANSI escape codes (no chalk, no ora, no boxen)
-- **Testing**: Custom 52-test security suite (zero framework)
+The simulator uses a custom verification logic `safePath()` inside [src/fileCrud.js](file:///c:/Users/Vidushi/coding/Thunder%20Hackathon/Thunder%20HAckathon%203/src/fileCrud.js) to enforce boundary safety.
+
+### 52-Test Security Breakdown
+To verify security robustness, the project includes an independent testing suite that covers:
+* **Path Traversal Attacks (11 Tests)**: Validates that entries like `../file.txt`, `..\..\window`, and absolute root paths are blocked.
+* **Null Byte Injection (1 Test)**: Checks that filenames like `filename\0.txt` are caught before execution.
+* **CRUD Mechanics (17 Tests)**: Confirms correct file creations, appends, listing, updates, and idempotent deletions under various string lengths.
+* **Input Validation (4 Tests)**: Ensures empty strings, white spaces, and invalid object types fail gracefully.
+* **Telemetry Verification (7 Tests)**: Assures target reconnaissance fields remain complete and formatted correctly.
+* **Utility Reliability (9 Tests)**: Validates helper functions such as ANSI-stripping, progress-bar clamping, and uptime formatting.
+
+---
+
+## 🛠️ Technology Stack
+* **Runtime Platform**: Node.js (v18.0.0+)
+* **Language Specification**: ES6+ JavaScript (configured as ES Modules)
+* **Dependencies**: `0` (Zero external packages, eliminating supply-chain exploits)
+* **Testing Engine**: Built-in test runner (`test.js`)
+* **Styling**: ANSI Escape Codes (custom theme layer, avoiding libraries like `chalk` or `ora`)
+
+---
+
+## 🚀 Future Roadmap & Extensions
+
+While currently complete, VENOM.JS is designed to support future malware simulation modules:
+1. **Ransomware simulation**: Confined file encryption and decryption using the Node.js `crypto` module.
+2. **Process Reconnaissance**: Scanning active tasks/processes via `child_process.exec` commands.
+3. **Registry/Cron Persistence**: Simulating how malware establishes persistence on startup.
+4. **Web Command & Control (C2) Dashboard**: Exposing the reconnaissance data through a lightweight local Express web app.
 
 ---
 
 ## 📜 License
-
-MIT — For educational purposes only.
+MIT — Distributed for educational and cybersecurity training purposes only.
