@@ -2,69 +2,80 @@
 
 > **⚠️ Educational simulation only. No actual harm is caused.**
 
-A step-by-step guide to running and demonstrating VENOM.JS for hackathon judges.
+A step-by-step guide to downloading, running, and demonstrating VENOM.JS from GitHub.
 
 ---
 
-## 📦 Prerequisites
+## 📥 Step 1 — Download the Project
 
-| Requirement | Minimum Version | Check Command |
-|---|---|---|
-| **Node.js** | v18.0.0+ | `node --version` |
+Choose one of the two options below to get the project files on your machine:
 
-> This project has **zero external dependencies** — no `npm install` is needed.
+### Option A: Clone using Git (Recommended)
+1. Open your terminal or Command Prompt.
+2. Run the following command to clone the repository:
+   ```bash
+   git clone https://github.com/AbhimanyuSah-DEV/VENOM.JS.git
+   ```
+3. Navigate into the project folder:
+   ```bash
+   cd VENOM.JS
+   ```
 
----
-
-## 🖥️ How to Run on Command Prompt (Windows)
-
-### Step 1 — Open Command Prompt
-
-Press `Win + R`, type `cmd`, and hit Enter.
-
-### Step 2 — Navigate to the Project Folder
-
-```cmd
-cd C:\Users\Vidushi\coding\Thunder Hackathon\Thunder HAckathon 3
-```
-
-> **Tip:** Open the folder in File Explorer, click the address bar, type `cmd`, and press Enter.
-
-### Step 3 — Launch VENOM.JS
-
-```cmd
-node index.js
-```
-
-Or using npm:
-
-```cmd
-npm start
-```
-
-### Step 4 — Run Security Tests
-
-```cmd
-npm test
-```
+### Option B: Download as a ZIP File
+1. Visit the repository page: [GitHub Repository](https://github.com/AbhimanyuSah-DEV/VENOM.JS).
+2. Click the green **Code** button near the top right, then select **Download ZIP**.
+3. Extract the downloaded `.zip` file to a folder on your computer (e.g., your Desktop).
 
 ---
 
-## 🖥️ How to Run on PowerShell
+## 📦 Step 2 — Verify Prerequisites
 
-```powershell
-cd "C:\Users\Vidushi\coding\Thunder Hackathon\Thunder HAckathon 3"
-node index.js
-```
-
----
-
-## 🖥️ How to Run on Git Bash / Linux / macOS
-
+Ensure you have Node.js installed (v18.0.0 or higher):
 ```bash
-cd "/path/to/Thunder HAckathon 3"
-node index.js
+node --version
 ```
+
+> **Note:** If Node.js is not installed, download it from [nodejs.org](https://nodejs.org/).
+> This project has **zero external dependencies** — you do **not** need to run `npm install`.
+
+---
+
+## 🖥️ Step 3 — Navigate & Run
+
+### 🖥️ On Windows (Command Prompt - CMD)
+
+1. Open **Command Prompt** (Press `Win + R`, type `cmd`, and press Enter).
+2. Navigate to the folder where you cloned or extracted the project. For example:
+   ```cmd
+   cd C:\path\to\extracted\folder\VENOM.JS
+   ```
+   *Tip: In File Explorer, navigate to the `VENOM.JS` folder, click on the address bar at the top, type `cmd`, and press Enter. This will open Command Prompt directly in that folder!*
+3. Launch the simulator:
+   ```cmd
+   node index.js
+   ```
+4. Run the security tests:
+   ```cmd
+   npm test
+   ```
+
+### 🖥️ On Windows (PowerShell)
+
+1. Open **PowerShell**.
+2. Navigate to the folder and run:
+   ```powershell
+   cd "C:\path\to\extracted\folder\VENOM.JS"
+   node index.js
+   ```
+
+### 🖥️ On macOS / Linux / Git Bash
+
+1. Open your Terminal.
+2. Navigate to the folder and run:
+   ```bash
+   cd /path/to/extracted/folder/VENOM.JS
+   node index.js
+   ```
 
 ---
 
