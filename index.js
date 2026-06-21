@@ -1,22 +1,21 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import readline from 'node:readline';
-import { fileURLToPath } from 'node:url';
 
-import { getSystemTelemetry } from './src/sysInfo.js';
-import { createFile, readFile, updateFile, deleteFile, listFiles, BASE_DIR } from './src/fileCrud.js';
+import {
+  runRecon, dropPayload, extractData, injectCode,
+  destroyEvidence, scanTargetDirectory, exfiltrateData,
+  runAttackChain, WORKSPACE_DIR,
+} from './src/engine.js';
+
 import {
   c, style, BANNER, SKULL, drawBox, progressBar,
   sectionHeader, divider, spinner, typewriter, kvPair, delay,
 } from './src/utils.js';
 
-// ── Resolve paths ────────────────────────────────────────────────────
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const WORKSPACE_DIR = path.resolve(__dirname, 'workspace');
-
-// ── Ensure workspace (sandbox) exists ───────────────────────────────
-fs.mkdirSync(WORKSPACE_DIR, { recursive: true });
+// ═══════════════════════════════════════════════════════════════════════
+//  VENOM.JS — CLI Interface
+//  Interactive terminal presentation layer consuming the core engine.
+//  ⚠ EDUCATIONAL ONLY — no harmful actions are performed.
+// ═══════════════════════════════════════════════════════════════════════
 
 // ═══════════════════════════════════════════════════════════════════════
 //  PHASE 1: TARGET RECONNAISSANCE
@@ -28,7 +27,7 @@ fs.mkdirSync(WORKSPACE_DIR, { recursive: true });
  */
 const displayRecon = async () => {
   await spinner('Scanning target system...');
-  const t = getSystemTelemetry();
+  const t = runRecon();
 
   // ── Target Fingerprint ────────────────────────────────────────
   sectionHeader('RECON', 'Target Fingerprint');
@@ -84,8 +83,7 @@ const displayRecon = async () => {
  * Demonstrates: payload drop → data extraction → code injection →
  * verification → evidence cleanup → error handling → sandbox test.
  */
-const runAttackChain = async () => {
-  const PAYLOAD_FILE = 'payload.txt';
+const runAttackChainCLI = async () => {
   divider();
   console.log(SKULL);
   console.log(`\n  ${c.bold}${c.bRed}☠  FULL ATTACK CHAIN SIMULATION${c.reset}`);
@@ -93,71 +91,71 @@ const runAttackChain = async () => {
 
   await delay(300);
 
-  // ── PHASE 2.1: PAYLOAD DROP ────────────────────────────────────
-  await typewriter('  [PHASE 2.1] Dropping payload to target filesystem...');
-  await spinner('Writing payload...');
-  const createResult = createFile(PAYLOAD_FILE, 'VENOM.JS was here. Initial payload delivered.');
-  console.log(`    ${style.success(`Payload dropped: "${PAYLOAD_FILE}" (${createResult.size} bytes)`)}`);
+  const chain = runAttackChain();
 
-  // ── PHASE 2.2: DATA EXTRACTION ────────────────────────────────
-  await typewriter('  [PHASE 2.2] Extracting payload data from target...');
-  await spinner('Reading target file...');
-  const read1 = readFile(PAYLOAD_FILE);
-  drawBox('📄 Extracted Data', [`"${read1.content}"`], c.green);
+  for (const step of chain) {
+    await typewriter(`  [PHASE ${step.phase}] ${step.description}...`);
+    await spinner(`${step.label}...`);
 
-  // ── PHASE 2.3: CODE INJECTION ─────────────────────────────────
-  await typewriter('  [PHASE 2.3] Injecting additional code into target file...');
-  await spinner('Injecting code...');
-  const updateResult = updateFile(PAYLOAD_FILE, '\n[INJECTED] Secondary payload activated.');
-  console.log(`    ${style.success(`Code injected: "${PAYLOAD_FILE}" (now ${updateResult.newSize} bytes)`)}`);
+    switch (step.phase) {
+      case '2.1':
+        console.log(`    ${style.success(`Payload dropped: "${step.result.filename}" (${step.result.size} bytes)`)}`);
+        break;
 
-  // ── PHASE 2.4: VERIFY INJECTION ───────────────────────────────
-  await typewriter('  [PHASE 2.4] Verifying injection success...');
-  await spinner('Verifying modified target...');
-  const read2 = readFile(PAYLOAD_FILE);
-  drawBox('📄 Post-Injection Content', read2.content.split('\n'), c.bYellow);
+      case '2.2':
+        drawBox('📄 Extracted Data', [`"${step.result.content}"`], c.green);
+        break;
 
-  // ── PHASE 2.5: EVIDENCE CLEANUP ───────────────────────────────
-  await typewriter('  [PHASE 2.5] Cleaning up evidence — removing traces...');
-  await spinner('Deleting payload...');
-  const delResult = deleteFile(PAYLOAD_FILE);
-  console.log(`    ${style.success(delResult.message)}`);
+      case '2.3':
+        console.log(`    ${style.success(`Code injected: "${step.result.filename}" (now ${step.result.newSize} bytes)`)}`);
+        break;
 
-  // ── PHASE 2.6: VERIFY CLEANUP ─────────────────────────────────
-  await typewriter('  [PHASE 2.6] Confirming evidence destruction...');
-  await spinner('Attempting to read deleted payload...');
-  const read3 = readFile(PAYLOAD_FILE);
-  drawBox('⚠ Graceful Error — File Destroyed', [
-    `Success: ${read3.success}`,
-    `Error:   ${read3.error}`,
-    `Message: ${read3.message}`,
-  ], c.bRed);
+      case '2.4':
+        drawBox('📄 Post-Injection Content', step.result.content.split('\n'), c.bYellow);
+        break;
 
-  // ── PHASE 2.7: SANDBOX ESCAPE ATTEMPT ─────────────────────────
-  console.log('');
-  await typewriter('  [PHASE 2.7] Attempting sandbox escape...');
-  await spinner('Trying path traversal attack...');
-  try {
-    createFile('../escape.txt', 'Attempting to break free from sandbox.');
-    console.log(`    ${style.error('BREACH! File written outside sandbox!')}`);
-  } catch (err) {
-    drawBox('🛡️  Sandbox Held — Attack Blocked', [
-      'Attack:   createFile("../escape.txt", ...)',
-      `Defense:  ${err.message}`,
-      'Result:   CONTAINED ✔',
-    ], c.bMagenta);
+      case '2.5':
+        console.log(`    ${style.success(step.result.message)}`);
+        break;
+
+      case '2.6':
+        drawBox('⚠ Graceful Error — File Destroyed', [
+          `Success: ${step.result.success}`,
+          `Error:   ${step.result.error}`,
+          `Message: ${step.result.message}`,
+        ], c.bRed);
+        break;
+
+      case '2.7':
+        if (step.result.blocked) {
+          console.log('');
+          drawBox('🛡️  Sandbox Held — Attack Blocked', [
+            `Attack:   ${step.result.attack}`,
+            `Defense:  ${step.result.defense}`,
+            `Result:   ${step.result.verdict}`,
+          ], c.bMagenta);
+        } else {
+          console.log(`    ${style.error(step.result.message)}`);
+        }
+        break;
+    }
   }
 
   console.log(`\n  ${c.bold}${c.bGreen}  ░▒▓█ Attack chain complete. All phases executed. █▓▒░${c.reset}\n`);
 };
 
-// ═══════════════════════════════════════════════════════════════════════
-//  INTERACTIVE COMMAND CENTER
-// ═══════════════════════════════════════════════════════════════════════
+
+
+const completions = ['1', '2', '3', '4', '5', '0', 'recon', 'payload', 'attack', 'exfil', 'scan', 'ls', 'clear', 'exit', 'help', 'menu'];
+const completer = (line) => {
+  const hits = completions.filter((c) => c.startsWith(line.trim()));
+  return [hits.length ? hits : completions, line];
+};
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
+  completer: completer,
 });
 
 let rlClosed = false;
@@ -213,7 +211,7 @@ const handlePayloadMenu = async () => {
         const content = (await prompt('payload content> ')).trim();
         if (!name) { console.log(`    ${style.warn('Target filename required.')}`); break; }
         try {
-          const result = createFile(name, content);
+          const result = dropPayload(name, content);
           console.log(`\n    ${style.success(`Payload dropped: "${name}" (${result.size} bytes)`)}`);
         } catch (err) { console.log(`\n    ${style.error(err.message)}`); }
         break;
@@ -222,7 +220,7 @@ const handlePayloadMenu = async () => {
         const name = (await prompt('target filename> ')).trim();
         if (!name) { console.log(`    ${style.warn('Target filename required.')}`); break; }
         try {
-          const result = readFile(name);
+          const result = extractData(name);
           if (result.success) {
             drawBox(`📄 Extracted: ${name} (${result.size} bytes)`, result.content.split('\n'), c.green);
           } else {
@@ -236,7 +234,7 @@ const handlePayloadMenu = async () => {
         const content = (await prompt('inject content> ')).trim();
         if (!name) { console.log(`    ${style.warn('Target filename required.')}`); break; }
         try {
-          const result = updateFile(name, '\n' + content);
+          const result = injectCode(name, '\n' + content);
           console.log(`\n    ${style.success(`Code injected into "${name}" (now ${result.newSize} bytes)`)}`);
         } catch (err) { console.log(`\n    ${style.error(err.message)}`); }
         break;
@@ -245,7 +243,7 @@ const handlePayloadMenu = async () => {
         const name = (await prompt('target filename> ')).trim();
         if (!name) { console.log(`    ${style.warn('Target filename required.')}`); break; }
         try {
-          const result = deleteFile(name);
+          const result = destroyEvidence(name);
           if (result.success) {
             console.log(`\n    ${style.success(result.message)}`);
           } else {
@@ -264,33 +262,20 @@ const handlePayloadMenu = async () => {
 };
 
 /**
- * Exfiltrates system telemetry to a JSON report in the workspace.
- * Simulates data exfiltration — saving stolen intel to a drop file.
+ * Exfiltrates system telemetry to a JSON report — CLI presentation wrapper.
  */
-const exfiltrateData = async () => {
+const exfiltrateDataCLI = async () => {
   await spinner('Exfiltrating target data...');
-  const telemetry = getSystemTelemetry();
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const filename = `exfil-report-${timestamp}.json`;
-  const filePath = path.join(WORKSPACE_DIR, filename);
-
-  const report = {
-    generatedAt: new Date().toISOString(),
-    generator: 'VENOM.JS v1.0.0',
-    classification: 'TARGET INTELLIGENCE REPORT',
-    ...telemetry,
-  };
-
-  fs.writeFileSync(filePath, JSON.stringify(report, null, 2), 'utf-8');
-  console.log(`    ${style.success(`Intel exfiltrated to workspace/${filename}`)}`);
-  console.log(`    ${c.dim}${c.green}Drop location: ${filePath}${c.reset}`);
+  const result = exfiltrateData();
+  console.log(`    ${style.success(result.message)}`);
+  console.log(`    ${c.dim}${c.green}Drop location: ${result.filePath}${c.reset}`);
 };
 
 /**
- * Scans and displays all files in the target workspace.
+ * Scans and displays all files in the target workspace — CLI presentation wrapper.
  */
-const scanDirectory = () => {
-  const result = listFiles();
+const scanDirectoryCLI = () => {
+  const result = scanTargetDirectory();
 
   if (!result.success) {
     console.log(`    ${style.error(result.message)}`);
@@ -342,15 +327,15 @@ const main = async () => {
         break;
 
       case '3':
-        await runAttackChain();
+        await runAttackChainCLI();
         break;
 
       case '4':
-        await exfiltrateData();
+        await exfiltrateDataCLI();
         break;
 
       case '5':
-        scanDirectory();
+        scanDirectoryCLI();
         break;
 
       case '0':

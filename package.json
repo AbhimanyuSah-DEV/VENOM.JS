@@ -1,13 +1,18 @@
 {
-  "name": "system-profiler-cli",
-  "version": "1.0.0",
-  "description": "Node.js System Profiler & Safe File CRUD CLI",
+  "name": "venom-js",
+  "version": "2.0.0",
+  "description": "VENOM.JS — Educational Virus Simulator (CLI + Web Dual-Interface)",
   "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "web": "node server.js",
     "test": "node test.js"
   },
-  "keywords": [],
-  "license": "MIT"
+  "keywords": ["virus", "simulator", "educational", "security", "hackathon"],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.0",
+    "ws": "^8.18.0"
+  }
 }

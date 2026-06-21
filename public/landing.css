@@ -1,0 +1,187 @@
+:root {
+  --bg: #000000;
+  --green: #00ff41;
+  --green-dim: #00cc33;
+  --green-muted: #00661a;
+  --white: #ffffff;
+  --dim: #555555;
+  --red: #ff3333;
+  --yellow: #ffcc00;
+  --font: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--green);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.4;
+  cursor: default;
+  letter-spacing: 0.5px;
+}
+
+/* CRT Scanlines and Flickers */
+body::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 9999;
+  background-size: 100% 4px, 3px 100%;
+  pointer-events: none;
+}
+
+body::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.4) 100%);
+  z-index: 9998;
+  pointer-events: none;
+}
+
+/* Selection colors */
+::selection {
+  background: var(--green);
+  color: var(--bg);
+}
+
+/* Background Canvas for Matrix Rain */
+#matrix-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  opacity: 0.15;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+/* Terminal Wrapper */
+#terminal-wrapper {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 32px;
+  text-shadow: 0 0 4px rgba(0, 255, 65, 0.4);
+}
+
+#terminal-output {
+  flex: 1;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding-bottom: 20px;
+}
+
+#input-line {
+  display: flex;
+  align-items: center;
+  padding-top: 16px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--green-muted);
+}
+
+.prompt-text {
+  margin-right: 8px;
+  font-weight: 700;
+  color: var(--green);
+}
+
+#command-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 15px;
+  caret-color: var(--green);
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+/* Monospace spacing and classes */
+.t-line {
+  margin: 0;
+  padding: 0;
+  min-height: 1.2em;
+  font-weight: 500;
+}
+.t-green { color: var(--green); }
+.t-green-dim { color: var(--green-dim); }
+.t-muted { color: var(--green-muted); }
+.t-dim { color: var(--dim); }
+.t-white { color: var(--white); text-shadow: 0 0 5px rgba(255, 255, 255, 0.4); }
+.t-red { color: var(--red); text-shadow: 0 0 5px rgba(255, 51, 51, 0.4); }
+.t-yellow { color: var(--yellow); text-shadow: 0 0 5px rgba(255, 204, 0, 0.4); }
+.t-ascii { font-weight: 700; line-height: 1.15; white-space: pre; }
+.t-user-cmd { color: var(--white); font-weight: 700; }
+
+/* Interactive Command Links */
+.cmd-link {
+  color: var(--yellow);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-underline-offset: 4px;
+  transition: all 0.2s ease;
+}
+
+.cmd-link:hover {
+  color: var(--white);
+  text-shadow: 0 0 8px var(--yellow);
+  background: rgba(255, 204, 0, 0.1);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+  border-left: 1px solid #1a1a1a;
+}
+::-webkit-scrollbar-thumb {
+  background: #222;
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green-muted);
+}
+
+/* Screen shake effect */
+.screen-shake {
+  animation: shake 0.3s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-3px, 3px); }
+  40% { transform: translate(3px, -3px); }
+  60% { transform: translate(-3px, -3px); }
+  80% { transform: translate(3px, 3px); }
+}
+
+/* Terminal loader visual */
+.loader-bar {
+  display: inline-block;
+  color: var(--green);
+  font-weight: bold;
+}

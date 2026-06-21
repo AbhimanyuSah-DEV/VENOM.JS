@@ -7,10 +7,11 @@
   <a href="https://github.com/AbhimanyuSah-DEV/VENOM.JS"><img src="https://img.shields.io/badge/Dependencies-Zero-brightgreen?style=for-the-badge" alt="Dependencies"></a>
   <a href="https://github.com/AbhimanyuSah-DEV/VENOM.JS/blob/main/test.js"><img src="https://img.shields.io/badge/Tests-52%20Passing-success?style=for-the-badge&logo=mocha&logoColor=white" alt="Tests"></a>
   <a href="https://github.com/AbhimanyuSah-DEV/VENOM.JS/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License"></a>
+  <img src="https://img.shields.io/badge/Web%20C2%20Dashboard-Active-00ff41?style=for-the-badge" alt="Web Dashboard">
 </p>
 
 <p align="center">
-  <strong>☠️ Educational Virus Simulator (Reconnaissance, Payload Delivery, Code Injection, Data Exfiltration) ☠️</strong>
+  <strong>☠️ Educational Dual-Interface Virus Simulator (Reconnaissance, Payload Delivery, Code Injection, Data Exfiltration) ☠️</strong>
 </p>
 
 ---
@@ -23,15 +24,16 @@
 
 ## 🦠 What is VENOM.JS?
 
-Built entirely in JavaScript for the **"CREATE A VIRUS IN JS"** hackathon theme, **VENOM.JS** is a zero-dependency CLI application that simulates the full lifecycle of real-world malware. 
+Built entirely in JavaScript for the **"CREATE A VIRUS IN JS"** hackathon theme, **VENOM.JS** is a zero-dependency **Dual-Interface** application that simulates the full lifecycle of real-world malware. 
 
-Through an interactive green-on-black "Matrix-themed" terminal UI, it provides a safe, hands-on look at how attackers gather host intelligence, deploy payloads, inject code, and clean up their tracks. It runs 100% locally with zero external npm packages, relying only on Node.js core modules.
+Through an interactive command-line terminal and a high-fidelity **Web Command & Control (C2) Dashboard** (featuring a Matrix digital rain canvas, CRT filters, animated boot BIOS screen, secure connection loaders, and responsive console layout), it provides a safe, hands-on look at how attackers gather host intelligence, deploy payloads, inject code, and clean up their tracks. It runs 100% locally with zero external npm packages for its simulation logic, relying only on Node.js core modules.
 
 ---
 
 ## ✨ Features
 
-* **🔍 Target Reconnaissance**: Deep system fingerprinting (OS version, architecture, CPU specs, live RAM usage bar, network interfaces, and user environment variables).
+* **🌐 Dual-Interface Dashboard**: Toggle between the native console terminal and the immersive web interface. The Web UI features screen-shake/flash animations, a modal payload manager, and real-time WebSocket logs.
+* **🔍 Target Reconnaissance**: Deep system fingerprinting (OS version, architecture, CPU specs, live RAM usage bar, network interfaces, and environment variables).
 * **💉 Sandboxed Payload Engine**: A secure file system wrapper supporting sandboxed Create, Read, Update (inject), and Delete (CRUD) operations.
 * **☠️ Automated Attack Chain**: A hands-free, 7-phase simulation showing a complete malware attack lifecycle from initial drop to self-deletion and sandbox escape testing.
 * **📡 Exfiltration Engine**: Saves the collected intelligence into a timestamped JSON exfiltration report.
@@ -46,13 +48,22 @@ Through an interactive green-on-black "Matrix-themed" terminal UI, it provides a
 ```
 /
 ├── src/
-│   ├── sysInfo.js        # 🔍 Reconnaissance Module (Telemetry, RAM, Net, Env)
+│   ├── engine.js         # ⚙️ Shared Core Engine (recon, file operations, attack chain)
+│   ├── sysInfo.js        # 🔍 Reconnaissance Module (Telemetry gatherer)
 │   ├── fileCrud.js       # 💉 Sandboxed Payload Engine (Path Traversal Protection)
 │   └── utils.js          # 🎨 Hacker UI Toolkit (ANSI Colors, Spinners, Typewriter)
+├── public/                # 🌐 Frontend Web Dashboard Assets
+│   ├── index.html        # Matrix digital rain landing page
+│   ├── terminal.html     # Web simulator CLI dashboard
+│   ├── landing.css       # Retro green/black landing styles
+│   ├── style.css         # Console dashboard styling
+│   ├── landing.js        # Matrix rain, boot sequence & command links controller
+│   └── app.js            # WebSocket client controller
 ├── workspace/             # 🔒 Isolated Sandbox (All file I/O is restricted here)
 ├── index.js               # ☠️ CLI Command Center (Main Entry Point)
+├── server.js              # 📡 Express & WebSocket C2 Bridge Server
 ├── test.js                # 🧪 52-Test Security & Vulnerability Test Suite
-├── package.json           # Project metadata (ES Modules config)
+├── package.json           # Project metadata (ES Modules config, scripts)
 └── walkthrough.md         # Extended command documentation
 ```
 
@@ -60,10 +71,13 @@ Through an interactive green-on-black "Matrix-themed" terminal UI, it provides a
 
 ```mermaid
 graph TD
-    Index[index.js <br> Command & Control] --> SysInfo[src/sysInfo.js <br> Reconnaissance]
-    Index --> FileCrud[src/fileCrud.js <br> Sandboxed Payload Engine]
-    Index --> Utils[src/utils.js <br> Hacker UI & Presentation]
-    FileCrud -.-> Sandbox[(./workspace <br> Confined Directory)]
+    Index[index.js <br> CLI Command Center] --> Engine[src/engine.js <br> Core Engine]
+    Server[server.js <br> C2 Bridge Server] --> Engine
+    Engine --> SysInfo[src/sysInfo.js <br> Reconnaissance]
+    Engine --> FileCrud[src/fileCrud.js <br> Sandboxed CRUD Engine]
+    Index --> Utils[src/utils.js <br> CLI UI & Presentation]
+    Server -.-> Public[public/ <br> Web UI Dashboard]
+    FileCrud -.-> Sandbox[(./workspace <br> Confined Sandbox)]
 ```
 
 ---
@@ -112,38 +126,37 @@ graph LR
   ```bash
   node --version
   ```
-- **No dependencies**: This project uses only built-in modules. No `npm install` is needed.
+- **Zero Simulation Dependencies**: This project uses only built-in Node.js modules for all simulation code. (Express and ws are used strictly for launching the optional Web UI server).
 
 ---
 
-### 🖥️ Windows (Command Prompt - CMD)
+### 🖥️ CLI Mode: Windows (Command Prompt - CMD)
 
 1. Open **Command Prompt** (Press `Win + R`, type `cmd`, and press Enter).
 2. Navigate to the project directory:
    ```cmd
-   cd "C:\Users\Vidushi\coding\Thunder Hackathon\Thunder HAckathon 3"
+   cd "C:\Users\user\coding\Thunder Hackathon\Thunder HAckathon 3"
    ```
-   > [!TIP]
-   > You can also open the project directory in File Explorer, click the address bar at the top, type `cmd`, and press Enter.
-3. Launch the simulator:
+   *Tip: You can also open the project directory in File Explorer, click the address bar at the top, type `cmd`, and press Enter.*
+3. Launch the CLI simulator:
    ```cmd
    node index.js
    ```
 
 ---
 
-### 🖥️ Windows (PowerShell)
+### 🖥️ CLI Mode: Windows (PowerShell)
 
 1. Open **PowerShell**.
 2. Navigate to the directory and run the simulator:
    ```powershell
-   cd "C:\Users\Vidushi\coding\Thunder Hackathon\Thunder HAckathon 3"
+   cd "C:\Users\user\coding\Thunder Hackathon\Thunder HAckathon 3"
    node index.js
    ```
 
 ---
 
-### 🖥️ macOS / Linux (Terminal)
+### 🖥️ CLI Mode: macOS / Linux (Terminal)
 
 1. Open your terminal.
 2. Run the following commands:
@@ -151,6 +164,21 @@ graph LR
    cd "/path/to/Thunder HAckathon 3"
    node index.js
    ```
+
+---
+
+### 🌐 Web Dual-Interface Mode (Web C2 UI)
+
+To run the interactive web interface dashboard:
+1. In your terminal, launch the bridge server:
+   ```bash
+   npm run web
+   ```
+2. Open your web browser and navigate to:
+   ```
+   http://localhost:3000
+   ```
+3. Boot the console, and click/type `npm run web` to watch the progress loaders compile assets and transition into the visual dashboard panel (`/terminal.html`).
 
 ---
 
@@ -216,7 +244,7 @@ VENOM.JS collects the following telemetry to simulate real malware behavior.
 
 ## 🛡️ Sandbox Security Guard
 
-The simulator uses a custom verification logic `safePath()` inside [src/fileCrud.js](file:///c:/Users/Vidushi/coding/Thunder%20Hackathon/Thunder%20HAckathon%203/src/fileCrud.js) to enforce boundary safety.
+The simulator uses a custom verification logic `safePath()` inside [src/fileCrud.js](file:///c:/Users/user/coding/Thunder%20Hackathon/Thunder%20HAckathon%203/src/fileCrud.js) to enforce boundary safety.
 
 ### 52-Test Security Breakdown
 To verify security robustness, the project includes an independent testing suite that covers:
@@ -244,7 +272,6 @@ While currently complete, VENOM.JS is designed to support future malware simulat
 1. **Ransomware simulation**: Confined file encryption and decryption using the Node.js `crypto` module.
 2. **Process Reconnaissance**: Scanning active tasks/processes via `child_process.exec` commands.
 3. **Registry/Cron Persistence**: Simulating how malware establishes persistence on startup.
-4. **Web Command & Control (C2) Dashboard**: Exposing the reconnaissance data through a lightweight local Express web app.
 
 ---
 

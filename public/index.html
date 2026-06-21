@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VENOM.JS — Malware Simulator & Control Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="landing.css">
+</head>
+<body>
+  <canvas id="matrix-canvas"></canvas>
+
+  <main id="terminal-wrapper" tabindex="0">
+    <div id="terminal-output"></div>
+    <div id="input-line">
+      <span class="prompt-text">guest@venom:~$</span>
+      <input id="command-input" type="text" autocomplete="off" spellcheck="false" autofocus />
+    </div>
+  </main>
+
+  <script src="landing.js"></script>
+</body>
+</html>
