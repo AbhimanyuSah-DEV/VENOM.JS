@@ -24,9 +24,29 @@
 
 ## 🦠 What is VENOM.JS?
 
-Built entirely in JavaScript for the **"CREATE A VIRUS IN JS"** hackathon theme, **VENOM.JS** is a zero-dependency **Dual-Interface** application that simulates the full lifecycle of real-world malware. 
+Built entirely in JavaScript for the **"CREATE A VIRUS IN JS"** hackathon challenge, **VENOM.JS** directly fulfils the core objective:
 
-Through an interactive command-line terminal and a high-fidelity **Web Command & Control (C2) Dashboard** (featuring a Matrix digital rain canvas, CRT filters, animated boot BIOS screen, secure connection loaders, and responsive console layout), it provides a safe, hands-on look at how attackers gather host intelligence, deploy payloads, inject code, and clean up their tracks. It runs 100% locally with zero external npm packages for its simulation logic, relying only on Node.js core modules.
+> *Build a JavaScript-based tool that gathers and displays system information and environment variables and can do CRUD operations on other code files.*
+
+It is a zero-dependency **Dual-Interface** application that simulates the full lifecycle of real-world malware — from reconnaissance and payload delivery to code injection and data exfiltration — all safely sandboxed and built entirely with Node.js built-in modules.
+
+---
+
+## 🎯 Hackathon Objective Coverage
+
+| Requirement | How VENOM.JS Fulfils It |
+| :--- | :--- |
+| Gather OS details | `os.type()`, `os.platform()`, `os.release()`, `os.arch()` in `src/sysInfo.js` |
+| CPU Architecture | `os.cpus()` and `os.arch()` return model, core count, and speed |
+| Hostname | `os.hostname()` — simulates network topology fingerprinting |
+| Node.js Version | `process.version` — used to detect vulnerable runtime environments |
+| Platform Information | `os.platform()` — selects OS-specific attack payloads |
+| User Home Directory | `os.homedir()` — locates user data and credential stores |
+| Environment Variables | `process.env` with graceful fallbacks for `PATH`, `USER`, `SHELL`, `HOME`, `LANG`, `TERM` |
+| Structured Output | JSON-serializable objects, ANSI-formatted tables, and a live RAM progress bar |
+| Missing Value Handling | All fields use `\|\|` fallback chains — app never crashes on undefined env vars |
+| CRUD Operations | Full Create, Read, Update (inject), Delete on sandboxed files in `src/fileCrud.js` |
+| Clear Documentation | This `readme.md` + inline JSDoc comments on every function in `src/` |
 
 ---
 
@@ -78,6 +98,87 @@ graph TD
     Index --> Utils[src/utils.js <br> CLI UI & Presentation]
     Server -.-> Public[public/ <br> Web UI Dashboard]
     FileCrud -.-> Sandbox[(./workspace <br> Confined Sandbox)]
+```
+
+---
+
+## 🧠 Code Flow & Strategy
+
+This section directly fulfils the hackathon requirement: *"You must specify your code flow and strategy in `readme.md`"*.
+
+### Strategy: Layered Separation of Concerns
+
+VENOM.JS is split into three distinct layers, each with a single responsibility:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  PRESENTATION LAYER (index.js + public/)                        │
+│  Handles all user I/O: menus, ANSI colors, typewriter effects,  │
+│  web UI events, WebSocket rendering. No business logic here.    │
+├─────────────────────────────────────────────────────────────────┤
+│  ENGINE LAYER (src/engine.js)                                   │
+│  Orchestrates operations. Returns pure JSON-serializable data.  │
+│  Zero console.log calls — this layer is fully testable.         │
+├─────────────────────────────────────────────────────────────────┤
+│  DATA LAYER (src/sysInfo.js + src/fileCrud.js)                  │
+│  Raw data gathering and file I/O with security validation.      │
+│  Each function is atomic, predictable, and side-effect-free.    │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Step-by-Step Code Flow: Reconnaissance (Option 1)
+
+```
+1. User selects Option 1 in the CLI menu (index.js)
+   │
+   ▼
+2. index.js calls engine.runRecon() from src/engine.js
+   │
+   ▼
+3. engine.runRecon() calls getSystemTelemetry() from src/sysInfo.js
+   │
+   ├─► os.type() / os.platform() / os.release()   → system fingerprint
+   ├─► os.arch() / os.cpus()                       → CPU profile
+   ├─► os.totalmem() / os.freemem()                → RAM usage (with % bar)
+   ├─► os.networkInterfaces()                      → filtered IPv4 + MAC
+   └─► process.env.PATH / USER / SHELL / HOME…    → env vars (with fallbacks)
+   │
+   ▼
+4. Returns a structured JSON object to engine.js, then to index.js
+   │
+   ▼
+5. index.js formats and prints with ANSI styling via src/utils.js
+   (or server.js broadcasts it as a WebSocket JSON message to the browser)
+```
+
+### Step-by-Step Code Flow: CRUD Operations (Option 2)
+
+```
+1. User selects a CRUD sub-option (index.js) and provides filename + content
+   │
+   ▼
+2. index.js calls the matching engine function:
+   dropPayload()  → createFile()   (CREATE)
+   extractData()  → readFile()     (READ)
+   injectCode()   → updateFile()   (UPDATE / Append)
+   destroyEvidence() → deleteFile() (DELETE)
+   │
+   ▼
+3. All paths pass through safePath() in src/fileCrud.js:
+   ├─► Rejects empty or non-string filenames  (VALIDATION error)
+   ├─► Rejects null-byte injection \0          (SECURITY error)
+   ├─► Resolves absolute path with path.resolve()
+   ├─► Blocks any path not starting with BASE_DIR  (TRAVERSAL blocked)
+   └─► Blocks the BASE_DIR itself (prevents directory-as-file access)
+   │
+   ▼
+4. If safe → executes fs.writeFileSync / readFileSync / appendFileSync / unlinkSync
+   │
+   ▼
+5. Returns { success, operation, filename, size, message } JSON result
+   │
+   ▼
+6. Presentation layer renders the result with appropriate ANSI color coding
 ```
 
 ---
@@ -227,33 +328,132 @@ Use this script during your presentation to showcase the project's features and 
 
 ## 📊 Reconnaissance Data Dictionary
 
-VENOM.JS collects the following telemetry to simulate real malware behavior.
+VENOM.JS collects the following telemetry using **only Node.js built-in modules**, directly satisfying the hackathon's data collection requirements:
 
-| Intel Collected | Node.js Core API | Real Malware Objective | Safe Simulation Behavior |
+| Data Point | Node.js API | Field in Output | Error Fallback |
 | :--- | :--- | :--- | :--- |
-| **OS Type / Platform** | `os.type()` / `os.platform()` | Selecting OS-targeted payloads | Returns platform strings (`win32`, `darwin`) |
-| **OS Release Version** | `os.release()` | Identifying unpatched CVE exploits | Gathers OS version numbers |
-| **Hostname** | `os.hostname()` | Mapping network topology | Gathers the machine name |
-| **System Uptime** | `os.uptime()` | Checking if host is a newly booted VM | Formats to readable duration (`1d 4h 3m`) |
-| **CPU Spec & Cores** | `os.cpus()` / `os.arch()` | Calibrating crypto-jacking threads | Displays model name and core count |
-| **Physical Memory (RAM)** | `os.totalmem()` / `os.freemem()` | Detecting sandboxes (low RAM = likely VM) | Renders free/used RAM & dynamic progress bar |
-| **Network Interfaces** | `os.networkInterfaces()` | Selecting routing paths & lateral propagation | Discovers local IPv4 & MAC address |
-| **Environment Variables** | `process.env` | Finding credentials, PATH variables, shells | Gathers user environment configs with fallbacks |
+| **Operating System** | `os.type()` | `system.osType` | Always returns string |
+| **Platform** | `os.platform()` | `system.osPlatform` | Always returns string |
+| **OS Release Version** | `os.release()` | `system.osRelease` | Always returns string |
+| **CPU Architecture** | `os.arch()` | `system.cpuArchitecture` | Always returns string |
+| **Hostname** | `os.hostname()` | `system.hostname` | Always returns string |
+| **Node.js Version** | `process.version` | `system.nodeVersion` | Always returns string |
+| **User Home Directory** | `os.homedir()` | `system.userHomeDir` | Always returns string |
+| **System Uptime** | `os.uptime()` | `system.uptime` | Formatted as `2d 5h 32m 10s` |
+| **CPU Model & Cores** | `os.cpus()` | `cpu.model`, `cpu.cores` | Falls back to `'Not Available'` if no CPUs |
+| **CPU Speed** | `os.cpus()[0].speed` | `cpu.speed` | Falls back to `'Not Available'` |
+| **Total RAM** | `os.totalmem()` | `memory.total` | Formatted as `16.00 GB` |
+| **Free / Used RAM** | `os.freemem()` | `memory.free`, `memory.used` | Computed, always valid |
+| **RAM Usage %** | Computed | `memory.usagePercent` | Clamped 0–100 |
+| **Network Interfaces** | `os.networkInterfaces()` | `network[].interface` | Falls back to `'Not Available'` |
+| **IPv4 Address** | `os.networkInterfaces()` | `network[].address` | Filtered to non-internal only |
+| **MAC Address** | `os.networkInterfaces()` | `network[].mac` | Included per interface |
+| **PATH Variable** | `process.env.PATH` | `environment.PATH` | `\|\|` fallback: `'Not Available'` |
+| **Current User** | `process.env.USER` or `USERNAME` | `environment.USER` | Cross-platform fallback chain |
+| **Shell** | `process.env.SHELL` or `ComSpec` | `environment.SHELL` | Cross-platform fallback chain |
+| **Language** | `process.env.LANG` | `environment.LANG` | `\|\|` fallback: `'Not Available'` |
+| **Home Directory** | `process.env.HOME` or `USERPROFILE` | `environment.HOME` | Cross-platform fallback chain |
+| **Terminal Type** | `process.env.TERM` | `environment.TERM` | `\|\|` fallback: `'Not Available'` |
+| **Node Environment** | `process.env.NODE_ENV` | `environment.NODE_ENV` | `\|\|` fallback: `'Not Available'` |
 
 ---
 
-## 🛡️ Sandbox Security Guard
+## 🛡️ Error Handling
 
-The simulator uses a custom verification logic `safePath()` inside [src/fileCrud.js](file:///c:/Users/user/coding/Thunder%20Hackathon/Thunder%20HAckathon%203/src/fileCrud.js) to enforce boundary safety.
+All error handling in VENOM.JS is **explicit, typed, and graceful** — the app never crashes on bad input or missing system data.
+
+### 1. Reconnaissance (sysInfo.js) — Missing Values
+All environment variable lookups use chained `||` fallback guards:
+```js
+// Cross-platform USER detection — works on Windows (USERNAME) and Unix (USER)
+USER: process.env.USER || process.env.USERNAME || 'Not Available'
+
+// Cross-platform SHELL detection — cmd.exe on Windows, bash/zsh on Unix
+SHELL: process.env.SHELL || process.env.ComSpec || 'Not Available'
+```
+This means the app **can never throw a TypeError** from an undefined environment variable, even in restricted cloud environments.
+
+### 2. CRUD Operations (fileCrud.js) — Typed Error Objects
+Every file operation returns a structured result object instead of throwing raw exceptions:
+```js
+// Example: reading a non-existent file
+{ success: false, operation: 'READ', error: 'ENOENT', message: 'File not found: target.txt' }
+
+// Example: path traversal attempt blocked
+{ success: false, operation: 'VALIDATION', error: 'PATH_TRAVERSAL', message: 'Access denied: path outside sandbox' }
+```
+This means **callers never need try/catch** — they just check `result.success`.
+
+### 3. safePath() — Security Validation Pipeline
+The `safePath()` function in `src/fileCrud.js` enforces all boundary checks:
+```
+Input → String type check → Null byte (\0) check → path.resolve() 
+     → Must start with BASE_DIR → Must not equal BASE_DIR → Permitted ✔
+```
 
 ### 52-Test Security Breakdown
-To verify security robustness, the project includes an independent testing suite that covers:
+To verify security robustness, the project includes an independent testing suite covering:
 * **Path Traversal Attacks (11 Tests)**: Validates that entries like `../file.txt`, `..\..\window`, and absolute root paths are blocked.
 * **Null Byte Injection (1 Test)**: Checks that filenames like `filename\0.txt` are caught before execution.
-* **CRUD Mechanics (17 Tests)**: Confirms correct file creations, appends, listing, updates, and idempotent deletions under various string lengths.
+* **CRUD Mechanics (17 Tests)**: Confirms correct file creations, appends, listing, updates, and idempotent deletions.
 * **Input Validation (4 Tests)**: Ensures empty strings, white spaces, and invalid object types fail gracefully.
-* **Telemetry Verification (7 Tests)**: Assures target reconnaissance fields remain complete and formatted correctly.
+* **Telemetry Verification (7 Tests)**: Assures all reconnaissance fields are present, correctly typed, and non-empty.
 * **Utility Reliability (9 Tests)**: Validates helper functions such as ANSI-stripping, progress-bar clamping, and uptime formatting.
+
+---
+
+## 🖥️ Output Formatting
+
+VENOM.JS outputs all collected data in **two structured formats simultaneously**, satisfying the hackathon's output formatting requirement:
+
+### Format 1: CLI — Structured ANSI Console Output
+The CLI renders data in a boxed, color-coded layout using raw ANSI escape codes built in `src/utils.js`:
+```
+  [RECON] Target Fingerprint
+
+  OS Type             Windows_NT
+  Platform            win32
+  OS Release          10.0.26200
+  CPU Architecture    x64
+  Hostname            DESKTOP-XYZ
+  Node.js Version     v24.11.1
+  Home Directory      C:\Users\user
+  System Uptime       2d 14h 42m 19s
+
+  [CPU] Processor Intel
+  Model               Intel(R) Core(TM) i7-13700H @ 2.40GHz
+  Logical Cores       14
+  Base Speed          2400 MHz
+
+  [MEMORY] RAM Mapping
+  Total               16.00 GB
+  Used                10.88 GB    ██████████████████░░░░░ 68.1%
+  Free                5.12 GB
+
+  [NETWORK] Network Interfaces
+  Interface           Wi-Fi
+  IPv4 Address        192.168.1.104
+  MAC Address         70:bc:10:8d:fa:21
+
+  [ENV] Environment Variables Harvested
+  PATH                C:\Windows\system32;...
+  USER                user
+  SHELL               C:\Windows\system32\cmd.exe
+```
+
+### Format 2: JSON — Structured Exfiltration Report (Option 4)
+Running Option 4 (Exfiltrate Data) writes all telemetry to a machine-readable JSON file:
+```json
+{
+  "timestamp": "2026-06-21T08:54:45.117Z",
+  "system": { "osType": "Windows_NT", "hostname": "DESKTOP-XYZ", "nodeVersion": "v24.11.1" },
+  "cpu": { "model": "Intel Core i7-13700H", "cores": 14, "speed": "2400 MHz" },
+  "memory": { "total": "16.00 GB", "used": "10.88 GB", "usagePercent": 68.1 },
+  "network": [{ "interface": "Wi-Fi", "address": "192.168.1.104", "mac": "70:bc:10:8d:fa:21" }],
+  "environment": { "USER": "user", "SHELL": "cmd.exe", "PATH": "C:\\Windows\\system32;..." }
+}
+```
+The file is saved as `workspace/exfil-report-<timestamp>.json` and can be opened or piped into any JSON viewer.
 
 ---
 
